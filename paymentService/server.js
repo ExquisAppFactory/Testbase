@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send(`<h1>Welcome to the ExquisApp Testbase wallet service <br> part of the Moneypal Application</h1>
+  res.send(`<h1>Welcome to the ExquisApp Testbase Payment Service <br> part of the Moneypal Application</h1>
     <h4>Please use PostMan and navigate to <code>/api/v1</code> to use the app</h4>
     <h4>Thanks  &#x1F600;</h4>`);
 });
