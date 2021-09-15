@@ -2,16 +2,43 @@ const axios = require("axios");
 const Payments = require('../models/payment.model');
 require('dotenv').config();
 
-const updatePaymentController = async (req, res) => {
+const getBankList = async (req, res) => {
     console.log(req.body);
-    res.status(200).send('Make Payment');
+    await axios({
+        method: 'GET',
+        url: 'https://api.paystack.co/bank',
+        headers: {
+            "Authorization": `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+        }
+    })
+    .then((res) => res.data)
+    .then((data) => {
+        console.log({ data });
+        return res.status(200).json({
+            message: data.message,
+            data: data.data.map(({ name, code }) => ({
+                name,
+                code
+            })),
+            isSuccessful: true
+        });
+    })
+    .catch((err) => {
+        console.log({ err });
+        res.status(400).json({
+            message: 'Request Failed',
+            data: null,
+            isSuccessful: false
+        });
+    })
+    res.status(200).json('Make Payment');
 }
 
 const verifyPaymentController = async (req, res) => {
     const { accountNumber, bankCode } = req.body;
 
     if (!accountNumber || !bankCode) {
-        res.status(400).send({
+        res.status(400).json({
             message: 'Bad Request',
             description: 'accountNumber or bankCode is missing',
             isSuccessful: false,
@@ -25,42 +52,50 @@ const verifyPaymentController = async (req, res) => {
         paid_by: req.body.email,
         paid_to: req.body.reference,
         payment_amount: req.body.amount,
-        status: 'pending'
+        status: 'Pending'
     })
 
     try {
-        const { data } = await axios({
+        const response = await axios({
             method: 'GET',
             url: `https://api.paystack.co/transaction/verify/${req.body.reference}`,
             headers: {
                 "Authorization": `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
             }
         });
+
+        if (!response.data) {
+            throw new Error('Payment Verification Failed');
+        }
         
-        const paymentData = data.data;
+        const paymentData = response.data.data;
         payment.status = paymentData.status;
-        const pay = await payment.save();
-        console.log({ pay, paymentData })
-        return res.status(200).json({
-            message: data?.message ?? '',
+        console.log({ payment });
+
+        const data = {
+            amount: paymentData.amount,
+            currency: paymentData.currency,
+            transactionDate: paymentData.transaction_date,
+            status: paymentData.status,
+            reference: paymentData.reference,
+        }
+
+        console.log({ data });
+        await payment.save();
+        res.status(200).json({
+            message: 'Verified Payment', 
             isSuccessful: true,
-            data: {
-                amount: data.data.amount,
-                currency: data.data.currency,
-                transactionDate: data.data.transaction_date,
-                status: data.data.status,
-                reference: data.data.reference,
-            }
+            data
         }); 
     } catch(err) {
-        console.log({ err });
-    res.status(400).json({
-        message: 'Update Failed',
-        isSuccessful: false,
-        description: undefined,
-        data: null
-    })
+        console.log({ err })
+        res.status(400).json({
+            message: 'Update Failed',
+            isSuccessful: false,
+            description: undefined,
+            data: null
+        })
     }
 }
 
-module.exports = { updatePaymentController, verifyPaymentController }
+module.exports = { getBankList, verifyPaymentController }

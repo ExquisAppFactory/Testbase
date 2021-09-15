@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // use routes
-app.use('/api', paymentRoute);
+app.use('/api/payments', paymentRoute);
 
 app.get("/", (req, res) => {
   res.send(`<h1>Welcome to the ExquisApp Testbase Payment Service <br> part of the Moneypal Application</h1>

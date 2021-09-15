@@ -63,14 +63,14 @@ export const RegisterPage = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label htmlFor="username" className="form-label">Email address</label>
-                                    <Field required type="email" className="form-control rounded" id="username" name="username" />
+                                    <Field required type="email" autoComplete="new-email" className="form-control rounded" id="username" name="username" />
                                     <div className="form-error">
                                         <ErrorMessage name="username" />
                                     </div>
                                 </div>
                                 <div className="mb-2">
                                     <label htmlFor="password" className="form-label">Password</label>
-                                    <Field required type="password" className="form-control rounded" id="password" name="password" />
+                                    <Field required type="password" autoComplete="new-password" className="form-control rounded" id="password" name="password" />
                                     <div className="form-error">
                                         <ErrorMessage name="password" />
                                     </div>

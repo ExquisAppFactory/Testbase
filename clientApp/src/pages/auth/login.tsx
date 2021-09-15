@@ -13,7 +13,7 @@ export const LoginPage = () => {
     const onSubmit = async (data: LoginModel, { setSubmitting }: FormikHelpers<LoginModel>) => {
         setSubmitting(true);
         await axios({
-            url: 'http://localhost:4502/api/auth/login',
+            url: `${process.env.REACT_APP_AUTH_BASE_URL}auth/login`,
             method: 'POST',
             data,
         })
@@ -28,7 +28,7 @@ export const LoginPage = () => {
 
     return (
         <Container style={{ maxWidth: 450, margin: '4em auto' }}>
-            <AuthHeader message="Register " handleAction={() => history.push('/register')} />
+            <AuthHeader message="Register" handleAction={() => history.push('/register')} />
 
             <div className="w-100 text-center">
                 <h2 className="mt-4">Welcome</h2>
@@ -50,7 +50,7 @@ export const LoginPage = () => {
                             <div className="row">
                                 <div className="mb-2">
                                     <label htmlFor="username" className="form-label">Email address</label>
-                                    <Field required type="email" className="form-control rounded" id="username" name="username" />
+                                    <Field required type="email" autoComplete="new-email" className="form-control rounded" id="username" name="username" />
                                     <div className="form-error">
                                     <ErrorMessage name="username" />
                                     </div>
@@ -58,7 +58,7 @@ export const LoginPage = () => {
                                 
                                 <div className="mb-3">
                                     <label htmlFor="password" className="form-label">Password</label>
-                                    <Field required type="password" className="form-control rounded" id="password" name="password" />
+                                    <Field required type="password" autoComplete="new-password" className="form-control rounded" id="password" name="password" />
                                     <div className="form-error">
                                     <ErrorMessage name="password" />
                                     </div>

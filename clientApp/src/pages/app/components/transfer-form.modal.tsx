@@ -1,5 +1,5 @@
 import { Form, Modal, ModalBody } from "reactstrap";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X } from 'react-feather';
 import { v4 } from 'uuid';
 import { PaystackButton } from 'react-paystack';
@@ -19,6 +19,19 @@ interface Props {
 
 export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
     const [alert, setAlert] = useState<{ success: boolean; message: string } | null>(null);
+    const [banks, setBanks] = useState<{ name: string; code: string; }[]>([]);
+    
+    useEffect(() => {
+        axios({
+            url: `${process.env.REACT_APP_PAYMENT_BASE_URL}payments/banks`,
+            method: 'GET',
+        })
+        .then((res) => res.data.data)
+        .then((data) => {
+            setBanks(data);
+        })
+        .catch((err) => console.log({ err }))
+    }, []);
 
     return (
         <Modal isOpen styles={styles}>
@@ -50,10 +63,9 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                                     setFieldError('amount', 'Amount must be at least 50');
                                     return;
                                 }
-                                console.log({ reference });
                                 axios({
                                     method: 'POST',
-                                    url: 'http://localhost:4501/api/verify',
+                                    url: `${process.env.REACT_APP_PAYMENT_BASE_URL}payments/verify`,
                                     data: {
                                         ...values,
                                         reference: reference.reference
@@ -100,12 +112,12 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                                     <div className="mb-2">
                                         <label htmlFor="bankCode" className="form-label">Recipient Bank</label>
                                             <Field as="select" required className="form-control rounded" id="bankCode" name="bankCode">
-                                            <option
-                                            value="Select Bank"
-                                            disabled>Select Bank</option>
-                                            {['Polaris Bank', 'GTB'].map((item) => (
-                                                <option key={item} value={item}>{item}</option>
-                                            ))}
+                                                <option
+                                                value="kmvklfmvojur8"
+                                                disabled>Select Bank</option>
+                                                {banks?.map(({ name, code }) => (
+                                                    <option key={code} value={code}>{name}</option>
+                                                ))}
                                             </Field>
                                         <div className="form-error">
                                             <ErrorMessage name="bankCode" />

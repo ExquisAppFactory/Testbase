@@ -12,7 +12,6 @@ export const DashboardPage = () => {
     if (!userDetails) {
         return <Redirect to="/login" />
     }
-    console.log({ userDetails});
 
     if (isTransferring) {
         return <TransferFormModal onClose={() => setTransferring(false)} />

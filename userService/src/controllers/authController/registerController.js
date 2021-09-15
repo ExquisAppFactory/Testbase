@@ -1,6 +1,8 @@
 const User = require("../../models/user.model");
 const { registerValidator } = require("../../utils/validation");
 const encryptPassword = require("../../utils/encryptPassword");
+const { v4 } = require('uuid');
+const { sendConfirmationEmail } = require("../../config/node-mailer");
 
 const handleValidation = (body, key) => {
   const { error } = registerValidator(body);
@@ -20,7 +22,6 @@ const registerController = async (req, res) => {
     }, "register");
 
     const usernameExist = await User.findOne({ username });
-    console.log({ username });
     if (usernameExist) {
       return res.status(400).json({ 
         message: "Username already exists",
@@ -28,16 +29,22 @@ const registerController = async (req, res) => {
         data: undefined
       });
     }
-    req.body.password = await encryptPassword(password);
+    
+    const hashed = await encryptPassword(password);
+    const token = v4();
+
     const user = new User({
       first_name: firstName,
       last_name: lastName,
       username: username,
-      password: password
+      password: hashed,
+      status: 'Pending',
+      confirmationCode: token
     });
     console.log({ user })
     await user.save();
 
+    sendConfirmationEmail(username, token);
     return res.status(201).json({
       message: 'User signup successful',
       isSuccessful: true,

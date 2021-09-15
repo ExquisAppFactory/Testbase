@@ -13,24 +13,36 @@ const handleValidation = (body) => {
 
 const loginController = async (req, res) => {
   try {
-    handleValidation(req.body);
-
     const { username, password } = req.body;
+    handleValidation({ username, password });
+
     const user = await getUser({ username }, true);
 
     const validPassword = await bcrypt.compare(password, user.password);
+    console.log({ user, validPassword })
     if (!validPassword) {
-      return res.status(400).json({ err_msg: "incorrect password" });
+      return res.status(400).json({ 
+        message: "incorrect password/username",
+        isSuccessful: false,
+        data: undefined
+      });
     }
+
+    if (user.status !== 'Active') {
+      return res.status(401).json({
+        message: 'Email is not verified. Check email and retry',
+        isSuccessful: false
+      });
+    }
+    
     const token = jwt.sign(
       { userId: user._id, email: user.username },
-      process.env.TOKEN_KEY,
+      process.env.TOKEN_SECRET_KEY,
       {
         expiresIn: "2h",
       }
     );
     
-    // const token = user.getSignedToken();
     return res.status(200).json({
       message: 'Login Successful',
       isSuccessful: true,
@@ -43,7 +55,7 @@ const loginController = async (req, res) => {
       }
     });
   } catch (error) {
-    return res.status(401).json({ err_msg: error.message });
+    return res.status(401).json({ message: error.message, isSuccessful: falsle });
   }
 };
 

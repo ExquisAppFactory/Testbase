@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { DashboardPage } from './pages/app';
-import { RegisterPage, LoginPage } from './pages/auth';
+import { RegisterPage, LoginPage, VerifyEmailPage } from './pages/auth';
 
 export default function App () {
     return (
@@ -9,6 +9,7 @@ export default function App () {
             <Switch>
                 <Route path="/dashboard" component={DashboardPage} />
                 <Route path="/register" component={RegisterPage} />
+                <Route path="/confirm/:confirmationCode" component={VerifyEmailPage} />
                 <Route path="/login" component={LoginPage} />
                 <Route path="/" component={LoginPage} />
             </Switch>
