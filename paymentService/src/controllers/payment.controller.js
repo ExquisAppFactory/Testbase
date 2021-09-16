@@ -1,6 +1,7 @@
 const axios = require("axios");
-const Payments = require('../models/payment.model');
+const Payment = require('../models/payment.model');
 require('dotenv').config();
+const { v4 } = require('uuid')
 
 const getBankList = async (req, res) => {
     console.log(req.body);
@@ -13,7 +14,6 @@ const getBankList = async (req, res) => {
     })
     .then((res) => res.data)
     .then((data) => {
-        console.log({ data });
         return res.status(200).json({
             message: data.message,
             data: data.data.map(({ name, code }) => ({
@@ -31,11 +31,10 @@ const getBankList = async (req, res) => {
             isSuccessful: false
         });
     })
-    res.status(200).json('Make Payment');
 }
 
 const verifyPaymentController = async (req, res) => {
-    const { accountNumber, bankCode } = req.body;
+    const { accountNumber, bankCode, reference } = req.body;
 
     if (!accountNumber || !bankCode) {
         res.status(400).json({
@@ -46,19 +45,11 @@ const verifyPaymentController = async (req, res) => {
         });
         return;
     }
-    
-    const payment = await new Payments({
-        wallet_id: 1,
-        paid_by: req.body.email,
-        paid_to: req.body.reference,
-        payment_amount: req.body.amount,
-        status: 'Pending'
-    })
 
     try {
         const response = await axios({
             method: 'GET',
-            url: `https://api.paystack.co/transaction/verify/${req.body.reference}`,
+            url: `https://api.paystack.co/transaction/verify/${reference}`,
             headers: {
                 "Authorization": `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
             }
@@ -69,9 +60,6 @@ const verifyPaymentController = async (req, res) => {
         }
         
         const paymentData = response.data.data;
-        payment.status = paymentData.status;
-        console.log({ payment });
-
         const data = {
             amount: paymentData.amount,
             currency: paymentData.currency,
@@ -79,14 +67,29 @@ const verifyPaymentController = async (req, res) => {
             status: paymentData.status,
             reference: paymentData.reference,
         }
+        const payments = new Payment({
+            wallet_id: v4(),
+            paid_by: req.body.email,
+            paid_to: req.body.reference,
+            payment_amount: req.body.amount,
+            status: paymentData.status
+        });
+        const savePayment = await payments.save((err, data) => {
+            if (err) {
+                return res.status(400).json({
+                    message: 'Update Failed',
+                    isSuccessful: false,
+                    description: undefined,
+                    data: null
+                });
+            }
 
-        console.log({ data });
-        await payment.save();
-        res.status(200).json({
-            message: 'Verified Payment', 
-            isSuccessful: true,
-            data
-        }); 
+            res.status(200).json({
+                message: 'Payment Verified', 
+                isSuccessful: true,
+                data
+            });
+        });         
     } catch(err) {
         console.log({ err })
         res.status(400).json({
