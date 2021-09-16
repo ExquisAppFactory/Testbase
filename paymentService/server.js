@@ -1,9 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const connectDB = require('./src/config/db');
-const paymentRoute = require('./src/routes/payment.route');
 require("dotenv").config();
+const connectDB = require('./src/config/db');
+
+const paymentRoute = require('./src/routes/payment.route');
 
 const app = express();
 
@@ -14,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 // use routes
-app.use('/api', paymentRoute);
+app.use('/api/payments', paymentRoute);
 
 app.get("/", (req, res) => {
   res.send(`<h1>Welcome to the ExquisApp Testbase Payment Service <br> part of the Moneypal Application</h1>

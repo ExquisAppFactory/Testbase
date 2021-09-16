@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const { 
-    updatePaymentController, 
+    getBankList, 
     verifyPaymentController 
 } = require('../controllers/payment.controller');
 
-router.post('/update-payment', updatePaymentController);
+router.get('/banks', getBankList);
 router.post('/verify', verifyPaymentController);
 
 module.exports = router;
