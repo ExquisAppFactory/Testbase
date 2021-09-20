@@ -2,7 +2,7 @@ const User = require("../../models/user.model");
 const { registerValidator } = require("../../utils/validation");
 const encryptPassword = require("../../utils/encryptPassword");
 const { v4 } = require('uuid');
-const { sendConfirmationEmail } = require("../../config/node-mailer");
+const axios = require('axios');
 
 const handleValidation = (body, key) => {
   const { error } = registerValidator(body);
@@ -14,6 +14,7 @@ const handleValidation = (body, key) => {
 const registerController = async (req, res) => {
   try {
     const { username, password, firstName, lastName } = req.body;
+
     handleValidation({
       first_name: firstName,
       last_name: lastName,
@@ -24,7 +25,7 @@ const registerController = async (req, res) => {
     const usernameExist = await User.findOne({ username });
     if (usernameExist) {
       return res.status(400).json({ 
-        message: "Username already exists",
+        message: "Username/password already exists",
         isSuccessful: false,
         data: undefined
       });
@@ -41,10 +42,26 @@ const registerController = async (req, res) => {
       status: 'Pending',
       confirmationCode: token
     });
-    console.log({ user })
+
+    const emailApi = process.env.EMAIL_API + 'email';
+    
+    axios({
+      method: 'POST',
+      url: emailApi,
+      data: {
+        email: username,
+        subject: "Please confirm your account",
+        html: `<h1>Email Confirmation</h1>
+            <h2>Hello ${username.split('@')[0].trim()}</h2>
+            <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
+            <a href=http://localhost:3000/confirm/${token}> Click here</a>
+            </div>`,
+      }
+    }).then((data) => console.log({ data }))
+    .catch((error) => console.log({ error }));
+
     await user.save();
 
-    sendConfirmationEmail(username, token);
     return res.status(201).json({
       message: 'User signup successful',
       isSuccessful: true,

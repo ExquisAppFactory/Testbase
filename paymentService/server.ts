@@ -1,10 +1,9 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
 require("dotenv").config();
-const connectDB = require('./src/config/db');
-
-const paymentRoute = require('./src/routes/payment.route');
+import {connectDB} from './src/config';
+import paymentRoute from './src/routes';
 
 const app = express();
 

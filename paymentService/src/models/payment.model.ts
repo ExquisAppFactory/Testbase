@@ -1,6 +1,14 @@
-const mongoose = require("mongoose")
+import { Schema, model } from "mongoose"
 
-const paymentSchema = mongoose.Schema({
+export interface IPaymentSchema {
+    wallet_id: string;
+    paid_by: string;
+    paid_to: string;
+    status: string;
+    payment_amount : number;
+}
+
+const paymentSchema = new Schema({
     wallet_id: {
         type: String,
         required: true 
@@ -23,4 +31,4 @@ const paymentSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model("Payment", paymentSchema)
+export const PaymentSchema = model<IPaymentSchema>("Payment", paymentSchema)
