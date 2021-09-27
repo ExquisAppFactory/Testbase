@@ -38,7 +38,7 @@ NB You can use any backend technologies to build this Notably, Java, Springboot,
 3. setup a CI/CD pipeline and orchestration for the container
 4. Use DynamoDB(AWS-serveless) for the persistent layer
 
-We are a using a Database Per Service Patter for this project
+We are a using a Database Per Service Pattern for this project
 
 # User Service
 The user services handles the registration, authentication and authorization of the user. 

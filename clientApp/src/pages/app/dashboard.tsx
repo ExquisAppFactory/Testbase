@@ -2,11 +2,12 @@ import React from 'react';
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Container, Row } from 'reactstrap';
+import { AuthenticatedUser } from '../../models';
 import { extract } from '../../utils';
-import { TransferFormModal } from './components';
+import { CreditWalletModal, TransferFormModal } from './components';
 
 export const DashboardPage = () => {
-    const [userDetails] = useState(extract<any>('AUTH_USER'));
+    const [userDetails] = useState(extract<AuthenticatedUser>('AUTH_USER'));
     const [isTransferring, setTransferring] = useState(false);
 
     if (!userDetails) {
@@ -14,7 +15,7 @@ export const DashboardPage = () => {
     }
 
     if (isTransferring) {
-        return <TransferFormModal onClose={() => setTransferring(false)} />
+        return <CreditWalletModal onClose={() => setTransferring(false)} />
     }
 
     return (

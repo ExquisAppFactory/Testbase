@@ -6,11 +6,11 @@ const walletSchema = mongoose.Schema({
         type : String,
         required: true 
     },
-    username :{
+    username: {
         type: String,
         required: true
     },
-    amount : {
+    amount: {
         type : Number,
         required: true
     }

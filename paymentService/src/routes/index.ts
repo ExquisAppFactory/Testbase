@@ -1,9 +1,11 @@
 import { Router } from 'express';
-import { getBankList, verifyPaymentController } from '../controllers';
+import { fetchTransactions, getBankList, verifyPaymentController } from '../controllers';
+import { ValidateToken } from '../middlewares';
 
 const router = Router();
 
 router.get('/banks', getBankList);
-router.post('/verify', verifyPaymentController);
+router.get('/transactions', fetchTransactions);
+router.post('/verify', ValidateToken, verifyPaymentController);
 
 export default router;

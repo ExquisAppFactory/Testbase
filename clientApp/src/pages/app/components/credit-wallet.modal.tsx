@@ -1,12 +1,17 @@
 import { Form, Modal, ModalBody } from "reactstrap";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { X } from 'react-feather';
 import { v4 } from 'uuid';
+import * as Yup from 'yup';
+import dotenv from 'dotenv';
 import { PaystackButton } from 'react-paystack';
-import { ErrorMessage, Field, Formik } from "formik";
-import { extract, PaymentSchema } from "../../../utils";
+import { ErrorMessage, Field, Formik, useFormik } from "formik";
+import { extract } from "../../../utils";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
+import { AuthenticatedUser } from "../../../models";
+
+dotenv.config();
 
 const styles = {
     width: '100%',
@@ -18,23 +23,16 @@ interface Props {
     onClose: () => void;
 }
 
-export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
+export const CreditWalletModal: React.FC<Props> = ({ onClose }) => {
+    const { values: { amount } } = useFormik({
+        initialValues: { amount: '' },
+        validationSchema: Yup.object().shape({
+            amount: Yup.number().min(50).max(500000).required('Enter Amount')
+        }),
+        onSubmit: console.log
+    })
     const [alert, setAlert] = useState<{ success: boolean; message: string } | null>(null);
-    const [banks, setBanks] = useState<{ name: string; code: string; }[]>([]);
-
-    const user = extract<{token: string}>('AUTH_USER')!;
-    
-    useEffect(() => {
-        axios({
-            url: `${process.env.REACT_APP_PAYMENT_BASE_URL}payments/banks`,
-            method: 'GET',
-        })
-        .then((res) => res.data.data)
-        .then((data) => {
-            setBanks(data);
-        })
-        .catch((err) => console.log({ err }))
-    }, []);
+    const user = extract<AuthenticatedUser>('AUTH_USER')!;
 
     if (!user) {
         return <Redirect to="/" />
@@ -48,18 +46,14 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                         <i><X /></i>
                     </div>
 
-                    <h3 className="text-center">Send Money</h3>
+                    <h3 className="text-center">Credit Wallet</h3>
 
                     <div>
                     <Formik
                         initialValues={{
-                            accountNumber: '',
-                            email: '',
                             amount: '',
-                            bankCode: '',
                         }}
                         validateOnMount
-                        validationSchema={PaymentSchema}
                         onSubmit={(model) => {
                             console.log({ model });
                         }}
@@ -92,9 +86,9 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                             const handleClose = () => console.log('close');
                             const componentProps = () => ({
                                 reference: v4(),
-                                email: values.email,
-                                text: 'Proceed to Pay',
-                                amount: +values.amount * 100,
+                                text: 'Credit Wallet',
+                                email: user.username,
+                                amount: 1000,
                                 onSuccess, onClose: handleClose,
                                 publicKey: 'pk_test_86a34dfe9bb54afb6fd8d566918c1e83ed0c440e',
                             });
@@ -103,40 +97,9 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                                 <>
                                 <Form className="p-4" onSubmit={handleSubmit}>
                                 <div className="row">
-                                    <div className="mb-2">
-                                        <label htmlFor="toEmail" className="form-label">Recipient Email</label>
-                                            <Field required type="email" className="form-control rounded" id="toEmail" name="email" />
-                                        <div className="form-error">
-                                            <ErrorMessage name="toEmail" />
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-2">
-                                        <label htmlFor="accountNumber" className="form-label">Recipient Account Number</label>
-                                        <Field required className="form-control rounded" id="accountNumber" name="accountNumber" />
-                                        <div className="form-error">
-                                            <ErrorMessage name="accountNumber" />
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-2">
-                                        <label htmlFor="bankCode" className="form-label">Recipient Bank</label>
-                                            <Field as="select" required className="form-control rounded" id="bankCode" name="bankCode">
-                                                <option
-                                                value="kmvklfmvojur8"
-                                                disabled>Select Bank</option>
-                                                {banks?.map(({ name, code }) => (
-                                                    <option key={code} value={code}>{name}</option>
-                                                ))}
-                                            </Field>
-                                        <div className="form-error">
-                                            <ErrorMessage name="bankCode" />
-                                        </div>
-                                    </div>
-                                    
                                     <div className="mb-3">
                                         <label htmlFor="amount" className="form-label">Amount</label>
-                                            <Field required type="number" className="form-control rounded" id="amount" name="amount" />
+                                            <Field required type="number" min={50} className="form-control rounded" id="amount" name="amount" />
                                         <div className="form-error">
                                             <ErrorMessage name="amount" />
                                         </div>

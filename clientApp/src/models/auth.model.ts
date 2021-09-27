@@ -9,3 +9,12 @@ export interface UserRegisterModel {
     username: string;
     password: string;
 }
+
+export interface AuthenticatedUser {
+    token: string;
+    username: string;
+    id: string;
+    lastName: string;
+    firstName: string;
+}
+
