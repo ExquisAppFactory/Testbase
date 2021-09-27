@@ -52,10 +52,25 @@ const transferController = async (req, res) => {
 
 const getWalletController = async (req, res) => {
   try {
-    const userId = await req.params.userId;
-    const wallet = await Wallet.findOne({ userId });
-    if (!wallet) res.json({ err_message: "Wallet doesn't exist" });
-    return res.status(200).json(wallet);
+    const { user: { id } } = req.body;
+    const wallet = await Wallet.findOne({ userId: id });
+    if (!wallet) res.json({ 
+      message: "Wallet doesn't exist",
+      isSuccessful: false
+    });
+
+    if (!wallet.length) {
+      return res.json(200).json({
+        message: 'Wallet has no balance',
+        isSuccessful: true, 
+        data: {}
+      })
+    }
+    return res.status(200).json({
+      message: 'Wallet Retrieved Successfully',
+      isSuccessful: true, 
+      data: wallet
+    });
   } catch (error) {
     return res.json(error);
   }

@@ -1,16 +1,11 @@
 const router = require("express").Router();
-const {
-  getWalletController,
-  transferController,
-  walletController,
-} = require("../controllers/wallet.controller");
+const { creditWalletController } = require("../controllers/credit-wallet.controller");
+const ValidateToken = require('../middlewares/verrify-token');
+const { getWalletController } = require('../controllers/get-wallet-controller');
 
 //@desc To create user wallet
-// api/auth/register
-router.post("/wallet/createwallet/:userId", walletController)
+router.post("/credit-wallet", ValidateToken, creditWalletController)
 
-router.post("/wallet/transfer/:userId", transferController)
-
-router.get("/wallet/getwallet/:userId", getWalletController)
+router.get("/get-wallet-balance", ValidateToken, getWalletController)
 
 module.exports = router

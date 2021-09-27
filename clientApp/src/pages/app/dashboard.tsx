@@ -1,21 +1,36 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { Container, Row } from 'reactstrap';
-import { AuthenticatedUser } from '../../models';
+import { Link, Redirect } from 'react-router-dom';
+import { Container, Row, Table } from 'reactstrap';
+import { AuthenticatedUser, WalletDetailsModel } from '../../models';
 import { extract } from '../../utils';
 import { CreditWalletModal, TransferFormModal } from './components';
 
 export const DashboardPage = () => {
-    const [userDetails] = useState(extract<AuthenticatedUser>('AUTH_USER'));
-    const [isTransferring, setTransferring] = useState(false);
+    const userDetails = extract<AuthenticatedUser>('AUTH_USER')!;
+    const [modalOpen, setModalOpen] = useState<'transfer' | 'fund' | undefined>();
+    const [walletDetails, setWalletDetails] = useState<WalletDetailsModel | undefined>(undefined);
+
+    useEffect(() => {
+        axios({
+            method: 'GET',
+            url: `${process.env.REACT_APP_WALLET_BASE_URL}get-wallet-balance`,
+            headers: {
+                authorization: `Bearer ${(userDetails as AuthenticatedUser)?.token}`
+            }
+        }).then((response) => response.data)
+        .then(({ data }) => setWalletDetails(data)).catch((error) => console.log({ error }))
+    }, []);
 
     if (!userDetails) {
         return <Redirect to="/login" />
     }
 
-    if (isTransferring) {
-        return <CreditWalletModal onClose={() => setTransferring(false)} />
+    if (modalOpen) {
+        return modalOpen === 'transfer' ? 
+            <TransferFormModal onClose={() => setModalOpen(undefined)} /> : 
+            <CreditWalletModal onClose={() => setModalOpen(undefined)} />;
     }
 
     return (
@@ -29,28 +44,38 @@ export const DashboardPage = () => {
 
                 <div className="row mb-4">
                     <span className="col-6 bold">Wallet Balance:</span>
-                    <span className="col-4">&#36;10</span>
+                    <span className="col-4">&#x20A6;{walletDetails?.amount.toLocaleString()}</span>
                 </div>
             </Row>
 
             <Row>
                 <div className="col-lg-6 mx-auto mb-4">
-                    <button className="btn btn-success" onClick={() => setTransferring(true)}>Fund Wallet</button>
+                    <button className="btn btn-success" onClick={() => setModalOpen('fund')}>Fund Wallet</button>
                 </div>
             </Row>
 
             <Row>
-                <div className="col-12 text-primary bold-6 m-3">Transaction History</div>
+                <div className="col-lg-6 mb-4">
+                    <button className="btn btn-primary" onClick={() => setModalOpen('transfer')}>Transfer Money</button>
+                </div>
+            </Row>
 
-                <div className="form-error capitalize centered">No Transactions Yet</div>
-                {/* <Table>
+            <Row>
+                <div className="col-12 d-flex align-items-center justify-content-between bold-6 m-3">
+                    Transaction History
+
+                    <Link to="history">View All</Link>
+                </div>
+
+                {true ? <div className="form-error capitalize centered">No Transactions Yet</div> :
+                <Table>
                     <thead>
                         <th>S/N</th>
                         <th>From</th>
                         <th>To</th>
                         <th>Amount</th>
                     </thead>
-                </Table> */}
+                </Table>}
             </Row>
         </Container>
     )

@@ -7,6 +7,7 @@ import { ErrorMessage, Field, Formik } from "formik";
 import { extract, PaymentSchema } from "../../../utils";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
+import { AuthenticatedUser } from "../../../models";
 
 const styles = {
     width: '100%',
@@ -21,6 +22,7 @@ interface Props {
 export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
     const [alert, setAlert] = useState<{ success: boolean; message: string } | null>(null);
     const [banks, setBanks] = useState<{ name: string; code: string; }[]>([]);
+    const [users, setUsers] = useState<AuthenticatedUser[]>([]);
 
     const user = extract<{token: string}>('AUTH_USER')!;
     
@@ -34,6 +36,20 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
             setBanks(data);
         })
         .catch((err) => console.log({ err }))
+    }, []);
+
+    useEffect(() => {
+        axios({
+            method: 'GET',
+            url: `${process.env.REACT_APP_AUTH_BASE_URL}users`,
+            headers: {
+                authorization: `Bearer ${(user as AuthenticatedUser)?.token}`
+            }
+        }).then((response) => response.data.data)
+        .then((data) => {
+            setUsers(data);
+        })
+        .catch((error) => console.log({ error }))
     }, []);
 
     if (!user) {
@@ -105,7 +121,14 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                                 <div className="row">
                                     <div className="mb-2">
                                         <label htmlFor="toEmail" className="form-label">Recipient Email</label>
-                                            <Field required type="email" className="form-control rounded" id="toEmail" name="email" />
+                                        <Field as="select" required className="form-control rounded" id="email" name="email">
+                                                <option
+                                                value="jdnvfknv fbvufhfe"
+                                                disabled>Select User</option>
+                                                {users?.map(({ username, id }) => (
+                                                    <option key={username} value={id}>{username}</option>
+                                                ))}
+                                            </Field>
                                         <div className="form-error">
                                             <ErrorMessage name="toEmail" />
                                         </div>
