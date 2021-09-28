@@ -23,7 +23,6 @@
     outline:none;
     margin:0;
     padding:0;
-    font-family: var(--font-family);
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -50,6 +49,10 @@ img {
     max-width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+a {
+    width: auto;
 }
 
 .error {
@@ -142,6 +145,7 @@ background-color: #c4e9d8;
 a {
     text-decoration: none;
     transition: all 0.5s ease-in;
+    color: #0066a1;
 }
 
 button{
@@ -151,7 +155,7 @@ button{
 a:hover,
 a:focus,
 a:active {
-color: #00a159;
+color: #0066a1cc;
 opacity: 0.925;
 }
 
@@ -259,4 +263,10 @@ text-transform: uppercase;
 
 .text-primary{
 color: #18a4e4;
+}
+
+
+thead th, tbody td {
+    text-align: center;
+    width: auto;
 }

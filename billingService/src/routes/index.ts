@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { createBillingController } from '../controllers';
+import { CreditWalletController } from '../controllers';
+import { ValidateToken } from '../middlewares';
 
 const router = Router();
 
-router.post('/billing', createBillingController);
+router.post('/billing/transfer', ValidateToken, CreditWalletController);
 // router.get('/billings', getBillingsController);
 // router.get('/billings/:walletId', getBillingByWalletController);
 

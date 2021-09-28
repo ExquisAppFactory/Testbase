@@ -12,7 +12,6 @@ export const fetchTransactions = async (request: Request, response: express.Resp
                 throw err;
             }
 
-            console.log({ payments })
             return response.status(201).json({
                 message: 'Transactions Retrieved Successfully',
                 isSuccessful: true,
