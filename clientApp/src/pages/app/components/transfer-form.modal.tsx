@@ -55,7 +55,7 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                     <Formik
                         initialValues={{
                             firstName: '',
-                            email: '',
+                            payerId: '',
                             amount: '',
                             lastName: '',
                         }}
@@ -66,15 +66,15 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                         }}
                     >
                         {({ handleSubmit, values, isValid }) => {
-                            const user = users.find(({ id }) => id === values.email);
+                            const user = users.find(({ id }) => id === values.payerId);
 
                             return (
                                 <>
                                 <Form className="p-4" onSubmit={handleSubmit}>
                                 <div className="row">
                                     <div className="mb-2">
-                                        <label htmlFor="email" className="form-label">Recipient Email</label>
-                                        <Field as="select" required className="form-control rounded" id="email" name="email">
+                                        <label htmlFor="payerId" className="form-label">Recipient Email</label>
+                                        <Field as="select" required className="form-control rounded" id="payerId" name="payerId">
                                                 <option
                                                 value="jdnvfknv fbvufhfe"
                                                 disabled>Select User</option>
@@ -95,7 +95,7 @@ export const TransferFormModal: React.FC<Props> = ({ onClose }) => {
                                         </div>
                                     </div>
 
-                                    {values.email.length && user ? (
+                                    {values.payerId.length && user ? (
                                         <React.Fragment>
                                             <div className="mb-2">
                                                 <label htmlFor="firstName" className="form-label">Receiver&rsquo; Name</label>
