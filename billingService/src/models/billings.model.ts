@@ -2,7 +2,11 @@ import { Schema, model } from 'mongoose';
 import { IBillingModel } from './billing-response-model';
 
 const billingSchema = new Schema<IBillingModel>({
-  userId: {
+  payerId: {
+    type: String,
+    required: true
+  },
+  receiverId: {
     type: String,
     required: true
   },
@@ -13,7 +17,7 @@ const billingSchema = new Schema<IBillingModel>({
       max: 500000
   },
   invoiceNo: {
-      type: Number,
+      type: String,
       required: true
   },
   status: {

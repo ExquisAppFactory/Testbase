@@ -63,10 +63,9 @@ b. amount: float
 
 # Billing Service
 
-
 a. id: uuid
 b. user_id: User(referencing user objectid)
-c. invoice_no: int
+c. invoice_no: string
 d. bill_amount: float
 e. status: boolean
 f. date: date

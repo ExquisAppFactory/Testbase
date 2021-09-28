@@ -1,7 +1,8 @@
 export interface IBillingModel {
     id?: string;
-    userId: string;
-    invoiceNo: number;
+    receiverId: string;
+    payerId: string;
+    invoiceNo: string;
     billAmount: number;
     status: string;
     date?: Date;
