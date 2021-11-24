@@ -1,0 +1,14 @@
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/UserServiceApplication.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/enums/RoleType.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/enums/Gender.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/entity/Role.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/exception/HttpBadRequestException.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/enums/StatusType.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/entity/User.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/service/UserService.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/repository/UserRepository.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/utility/Dto.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/entity/RecordStatus.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/controller/UserController.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/exception/HttpNotFoundException.java
+/Users/chukwuebuka/Documents/personal/lightWeight/user-service/src/main/java/com/exquis/app/user/service/contract/UserServiceContract.java
