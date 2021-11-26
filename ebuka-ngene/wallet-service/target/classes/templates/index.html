@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <style>
+        .center {
+          margin: auto;
+          text-align: center;
+          border: 3px solid black;
+        }
+    </style>
+</head>
+<body>
+<div class="container center">
+    <div>
+        <h1>Hey</h1>
+        <p>
+            Welcome to MoneyPal wallet-service.
+            <br>For ease of consumption, <a href="/swagger-ui" th:href="@{/swagger-ui/}" class="btn btn-large btn-success">Check</a> or contact any of our developers for guide.</br>
+            <br>Or click <a href="/actuator/health" th:href="@{/actuator/health/}" class="btn btn-large btn-success">health</a> to check the health status of the API.</br>
+        </p>
+    </div>
+    <div>&copy; 2021 MoneyPal by Chukwuebuka</div>
+</div>
+</body>
+</html>
